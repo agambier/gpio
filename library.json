@@ -1,0 +1,28 @@
+{
+  "name": "GPIO",
+  "keywords": "gpio, mcp23017",
+  "description": "Arduino Library to handle a list of GPIO (Arduino built-in, MCP23017)",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/agambier/gpio.git"
+  },
+  "authors": 
+  [
+    {
+      "name": "Alexandre Gambier",
+      "email": "agambier.dev@gmail.com",
+      "url": "https://github.com/agambier",
+      "maintainer": true
+    }
+  ],
+  "dependencies":
+  {
+    "name": "Adafruit MCP23017 Arduino Library",
+    "authors": "Adafruit",
+    "frameworks": "arduino"
+  },
+  "version": "1.0.0",
+  "frameworks": "arduino",
+  "platforms": "*"
+}
