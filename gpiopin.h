@@ -35,15 +35,21 @@ class Pin
 		inline void setActiveHigh();
 		inline bool isActiveHigh() const;
 
-		virtual bool isActive() const = 0;
+		virtual bool isActive() = 0;
 		virtual void activate() const = 0;
 		virtual void deactivate() const = 0;
-		inline void toggle() const;
+		inline void toggle();
+
+		inline bool isFiltered() const;
+		inline void setFilter( bool enable, uint16_t filterTO = 0 );
 
 #if defined( GPIO_NAME )
 		inline const char* name() const;
 		inline void setName( const char *name );
 #endif
+
+	protected:
+		bool filterActiveState( bool isActive );
 
 	private:
 #if defined( GPIO_EEPROM )
@@ -51,15 +57,19 @@ class Pin
 #endif
 		uint8_t m_pin;
 		uint8_t m_mask;
+		uint32_t m_filter;
+		uint16_t m_filterTO;
+		bool m_lastActiveState;
 #if defined( GPIO_NAME )
 		char m_name[ GPIO_NAME_SIZE ];
 #endif		
 
 		enum MaskBit
 		{
-			Input = 0x01,			//	b'00000001'
-			PullUp = 0x02,			//	b'00000010'
-			ActiveHigh = 0x04		//	b'00000100'
+			Input = 1 << 0,			
+			PullUp = 1 << 1,	
+			ActiveHigh = 1 << 2,	
+			Filtered = 1 << 4
 		};
 };
 
@@ -110,9 +120,23 @@ void Pin::setActiveLow()
 {
 	m_mask &= ( ~Pin::ActiveHigh );
 }
-void Pin::toggle() const 
+void Pin::toggle()  
 {
 	isActive() ? deactivate() : activate() ;
+}
+bool Pin::isFiltered() const
+{
+	return ( m_mask & Pin::Filtered );
+}
+void Pin::setFilter( bool enable, uint16_t filterTO ) 
+{
+	if( enable )
+		m_mask |= Pin::Filtered;
+	else
+		m_mask &= ~Pin::Filtered;
+
+	if( filterTO )
+		m_filterTO = filterTO;
 }
 #if defined( GPIO_NAME )
 const char* Pin::name() const {

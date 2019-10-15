@@ -21,10 +21,12 @@ bool Arduino::begin()
 }
 
 
-bool Arduino::isActive() const 
+bool Arduino::isActive() 
 {
-	return	( isActiveHigh() && ( HIGH == digitalRead( pin() ) ) )
-		||	( !isActiveHigh() && ( LOW == digitalRead( pin() ) ) );
+	bool isActive = ( isActiveHigh() && ( HIGH == digitalRead( pin() ) ) )
+				||	( !isActiveHigh() && ( LOW == digitalRead( pin() ) ) );
+
+	return filterActiveState( isActive );
 }
 void Arduino::activate() const 
 {

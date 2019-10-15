@@ -33,13 +33,15 @@ bool MCP23017::begin()
 
 //
 //
-bool MCP23017::isActive() const 
+bool MCP23017::isActive() 
 {
 	if( nullptr == m_mcp23017 )
 		return false;
+		
+	bool isActive = ( isActiveHigh() && ( HIGH == m_mcp23017->digitalRead( pin() ) ) )
+				||	( !isActiveHigh() && ( LOW == m_mcp23017->digitalRead( pin() ) ) );
 
-	return	( isActiveHigh() && ( HIGH == m_mcp23017->digitalRead( pin() ) ) )
-		||	( !isActiveHigh() && ( LOW == m_mcp23017->digitalRead( pin() ) ) );
+	return filterActiveState( isActive );
 }
 
 //

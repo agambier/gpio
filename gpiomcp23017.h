@@ -22,7 +22,7 @@ class MCP23017 : public Pin
 		void setInterface( void *intf );
 		bool begin();
 		
-		bool isActive() const;
+		bool isActive();
 		void activate() const;
 		void deactivate() const;
 

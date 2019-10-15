@@ -13,7 +13,7 @@ class Arduino : public Pin
 
 		bool begin();
 		
-		bool isActive() const;
+		bool isActive();
 		void activate() const;
 		void deactivate() const;
 };
