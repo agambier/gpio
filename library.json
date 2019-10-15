@@ -23,7 +23,7 @@
 	"frameworks": "arduino",
 	"version": "https://github.com/agambier/Adafruit-MCP23017-Arduino-Library#2941ef52f8bec86288490fad6afd46b8215a300f"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "frameworks": "arduino",
   "platforms": "*"
 }
