@@ -11,6 +11,12 @@ namespace Gpio
 class Pin
 {
 	public:
+		enum TriggerMode
+		{
+			Level,
+			Edge,
+		};
+
 		Pin( uint8_t pin, uint8_t mode, bool isActiveHigh, int eepromOffset );
 
 		virtual void setInterface( void *intf );
@@ -34,6 +40,9 @@ class Pin
 		inline void setActiveLow();
 		inline void setActiveHigh();
 		inline bool isActiveHigh() const;
+
+		inline TriggerMode triggerMode() const;
+		inline void setTriggerMode( TriggerMode mode );
 
 		virtual bool isActive() = 0;
 		virtual void activate() const = 0;
@@ -69,7 +78,8 @@ class Pin
 			Input = 1 << 0,			
 			PullUp = 1 << 1,	
 			ActiveHigh = 1 << 2,	
-			Filtered = 1 << 4
+			Filtered = 1 << 4,
+			EdgeTrigger = 1 << 5
 		};
 };
 
@@ -138,6 +148,18 @@ void Pin::setFilter( bool enable, uint16_t filterTO )
 	if( filterTO )
 		m_filterTO = filterTO;
 }
+Pin::TriggerMode Pin::triggerMode() const
+{
+	return ( m_mask & Pin::EdgeTrigger ) ? Pin::Edge : Pin::Level ;
+}
+void Pin::setTriggerMode( TriggerMode mode )
+{
+	if( Pin::Edge == mode )
+		m_mask |= Pin::EdgeTrigger;
+	else
+		m_mask &= ~Pin::EdgeTrigger;
+}
+
 #if defined( GPIO_NAME )
 const char* Pin::name() const {
 	return m_name;

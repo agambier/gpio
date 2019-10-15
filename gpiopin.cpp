@@ -91,6 +91,7 @@ bool Pin::filterActiveState( bool isActive )
 	if( !( m_mask & Pin::Filtered ) )
 		return isActive;
 
+	//	need filtering ?
 	if( isActive && ( m_lastActiveState != isActive ) )
 	{	
 		//	start filtering ?
@@ -100,13 +101,18 @@ bool Pin::filterActiveState( bool isActive )
 		//	Accept new state
 		if( ( millis() - m_filter ) >= m_filterTO )
 			m_lastActiveState = isActive;
-	}
-	else
-	{	//	No filtering if not active or the same
-		m_lastActiveState = isActive;
-		m_filter = 0;
+
+		return m_lastActiveState;
 	}
 
+	//	Filter is done
+	//	for Edge trigerring force to false
+	if( isActive && ( m_mask & Pin::EdgeTrigger ) )
+		return false;
+
+	//	raz
+	m_lastActiveState = isActive;
+	m_filter = 0;
 	return m_lastActiveState;
 }
 
