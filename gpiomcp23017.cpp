@@ -33,31 +33,18 @@ bool MCP23017::begin()
 
 //
 //
-bool MCP23017::isActive() 
+uint8_t MCP23017::read()
 {
 	if( nullptr == m_mcp23017 )
-		return false;
-		
-	bool isActive = ( isActiveHigh() && ( HIGH == m_mcp23017->digitalRead( pin() ) ) )
-				||	( !isActiveHigh() && ( LOW == m_mcp23017->digitalRead( pin() ) ) );
+		return GPIO_UNDEFINED_STATE;
 
-	return filterActiveState( isActive );
+	return  m_mcp23017->digitalRead( pin() );
 }
 
-//
-//
-void MCP23017::activate() const 
+void MCP23017::write( uint8_t state )
 {
-	if( m_mcp23017 && !isInput() )
-		m_mcp23017->digitalWrite( pin(), isActiveHigh() ? HIGH : LOW );
-}
-
-//
-//
-void MCP23017::deactivate() const 
-{
-	if( m_mcp23017 && !isInput() )
-		m_mcp23017->digitalWrite( pin(), isActiveHigh() ? LOW : HIGH );
+	if( m_mcp23017 )
+		m_mcp23017->digitalWrite( pin(), state );
 }
 
 }

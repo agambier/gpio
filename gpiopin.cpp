@@ -17,7 +17,8 @@ Pin::Pin( uint8_t pin, uint8_t mode, bool activeHigh, int eepromOffset ) :
 	m_mask( 0 ),
 	m_filter( 0 ),
 	m_filterTO( 50 ),
-	m_lastActiveState( false )
+	m_lastActiveState( false ),
+	m_lastState( GPIO_UNDEFINED_STATE )
 {
 #if defined( GPIO_NAME )
 	m_name[ 0 ] = 0;
@@ -115,5 +116,40 @@ bool Pin::filterActiveState( bool isActive )
 	m_filter = 0;
 	return m_lastActiveState;
 }
+
+bool Pin::isActive() 
+{
+	bool isActive = ( isActiveHigh() && ( HIGH == read() ) )
+				||	( !isActiveHigh() && ( LOW == read() ) );
+
+	return filterActiveState( isActive );
+}
+
+void Pin::activate()  
+{
+	if( isInput() )
+		return;
+
+	uint8_t state = isActiveHigh() ? HIGH : LOW;
+	if( !isFiltered() || ( state != m_lastState )  )
+	{
+		write( state );
+		m_lastState = state;
+	}
+}
+
+void Pin::deactivate()  
+{
+	if( isInput() )
+		return;
+
+	uint8_t state = isActiveHigh() ? LOW : HIGH;
+	if( !isFiltered() || ( state != m_lastState )  )
+	{
+		write( state );
+		m_lastState = state;
+	}
+}
+
 
 }

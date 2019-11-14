@@ -12,10 +12,9 @@ class Arduino : public Pin
 		Arduino( uint8_t pin = 0, uint8_t mode = INPUT, bool isActiveHigh = true, int eepromOffset = 0 );
 
 		bool begin();
-		
-		bool isActive();
-		void activate() const;
-		void deactivate() const;
+	protected:
+		uint8_t read();
+		void write( uint8_t state );
 };
 
 //	----- inline functions -----

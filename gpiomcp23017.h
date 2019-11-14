@@ -21,13 +21,13 @@ class MCP23017 : public Pin
 
 		void setInterface( void *intf );
 		bool begin();
-		
-		bool isActive();
-		void activate() const;
-		void deactivate() const;
 
 		inline Adafruit_MCP23017* mcp23017( Adafruit_MCP23017 *mcp23017 ) const;
 		inline void setMCP23017( Adafruit_MCP23017 *mcp23017 );
+
+	protected:
+		uint8_t read();
+		void write( uint8_t state );
 
 	private:
 		Adafruit_MCP23017 *m_mcp23017;

@@ -8,6 +8,8 @@ namespace Gpio
 {
 
 #define GPIO_NAME_SIZE		16
+
+#define GPIO_UNDEFINED_STATE	0xff
 class Pin
 {
 	public:
@@ -44,13 +46,17 @@ class Pin
 		inline TriggerMode triggerMode() const;
 		inline void setTriggerMode( TriggerMode mode );
 
-		virtual bool isActive() = 0;
-		virtual void activate() const = 0;
-		virtual void deactivate() const = 0;
+		bool isActive();
+		void activate();
+		void deactivate();
 		inline void toggle();
 
 		inline bool isFiltered() const;
 		inline void setFilter( bool enable, uint16_t filterTO = 0 );
+
+		inline bool isBuffered() const;
+		inline void setBuffered( bool enable );
+		inline void clearBuffer();
 
 #if defined( GPIO_NAME )
 		inline const char* name() const;
@@ -60,6 +66,9 @@ class Pin
 	protected:
 		bool filterActiveState( bool isActive );
 
+		virtual uint8_t read() = 0;
+		virtual void write( uint8_t state ) = 0;
+
 	private:
 #if defined( GPIO_EEPROM )
 		int m_eepromOffset;
@@ -68,7 +77,8 @@ class Pin
 		uint8_t m_mask;
 		uint32_t m_filter;
 		uint16_t m_filterTO;
-		bool m_lastActiveState;
+		bool m_lastActiveState;		//	Filter state for inputs
+		uint8_t m_lastState;	//	Filter state for outputs
 #if defined( GPIO_NAME )
 		char m_name[ GPIO_NAME_SIZE ];
 #endif		
